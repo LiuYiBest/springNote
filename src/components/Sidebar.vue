@@ -2,10 +2,10 @@
   <div id="sidebar">
     <Avatar></Avatar>
     <div class="icons">
-      <router-link to="/notebook/"  title="笔记">
+      <router-link to="/note"  title="笔记">
         <i class="iconfont icon-note"></i>
       </router-link>
-      <router-link to="/noterBooks" title="笔记本">
+      <router-link to="/noteBooks" title="笔记本">
         <i  class="iconfont icon-notebook"></i>
       </router-link>
       <router-link to="/trash" title="回收站">
@@ -40,7 +40,6 @@ export  default {
   font-size: 20px;
   margin-top: 15px;
   a {
-    padding: 6px 0;
     display: block;
     padding: 20px;
   }

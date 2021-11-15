@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login.vue'
-import Noteboos from '@/components/NotebookList.vue'
+import Notebooks from '@/components/NotebookList.vue'
 import Note from '@/components/NoteDetail.vue'
 import Tash from '@/components/TashDetail.vue'
 
@@ -21,8 +21,8 @@ export default new Router({
     },
     {
       path: '/notebooks',
-      name: 'Noteboos',
-      component: Noteboos
+      name: 'Notebooks',
+      component: Notebooks
     },
     {
       path: '/note/:noteId',
