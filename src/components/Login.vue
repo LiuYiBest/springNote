@@ -5,29 +5,36 @@
         <div class="modal-container">
           <div class="main"></div>
           <div class="form">
+
             <h3 @click="showRegister">创建账户</h3>
-            <!--   双向绑定，得到输入框的数据-->
-            <div v-show="isShowRegister" class="register">
-              <!--   监听用户输入 绑定用户名和密码  -->
-              <input type="text" @input="validRegister" v-model="register.username" placeholder="用户名">
-              <input type="password" v-model="register.password" placeholder="密码">
-              <!--            isError是否为true 显示错误提示的class样式  -->
-              <p v-bind:class="{error: register.isError}">{{ register.notice }}</p>
-              <div class="button" @click="onRegister">创建账号</div>
-            </div>
+            <!--  加入动画   -->
+            <transition name="slide">
+              <!--   双向绑定，得到输入框的数据-->
+              <div v-bind:class="{show: isShowRegister}" class="register">
+                <!--   监听用户输入 绑定用户名和密码  -->
+                <input type="text" v-model="register.username" placeholder="用户名">
+                <input type="password" v-model="register.password" @keyup.enter="onRegister" placeholder="密码">
+                <p v-bind:class="{error: register.isError}"> {{register.notice}}</p>
+                <div class="button" @click="onRegister">创建账号</div>
+              </div>
+            </transition>
+
             <h3 @click="showLogin">登录</h3>
-            <div v-show="isShowLogin" class="login">
-              <input type="text" v-model="login.username" placeholder="输入用户名">
-              <input type="password" v-model="login.password" placeholder="密码">
-              <p v-bind:class="{error: login.isError}">{{ login.notice }}</p>
-              <div class="button" @click="onLogin">登录</div>
-            </div>
+            <transition name="slide">
+              <div v-bind:class="{show: isShowLogin}" class="login">
+                <input type="text" v-model="login.username" placeholder="输入用户名">
+                <input type="password" v-model="login.password" @keyup.enter="onLogin"  placeholder="密码">
+                <p v-bind:class="{error: login.isError}"> {{login.notice}}</p>
+                <div class="button" @click="onLogin"> 登录</div>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -60,7 +67,7 @@ export default {
       this.isShowLogin = true
     },
     //监听用户输入
-    validRegister(){
+    validRegister() {
       console.log(this.register.username)
     },
     //点击注册和登录
@@ -102,6 +109,7 @@ export default {
 }
 </script>
 
+
 <style lang="less">
 .modal-mask {
   position: fixed;
@@ -110,49 +118,44 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, .7);
   display: table;
   transition: opacity .3s ease;
 }
-
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
 }
-
 .modal-container {
   width: 800px;
   height: 500px;
   margin: 0px auto;
   background-color: #fff;
   border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
   font-family: Helvetica, Arial, sans-serif;
   display: flex;
-
   .main {
     flex: 1;
     background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center center no-repeat;
     background-size: contain;
   }
-
   .form {
     width: 270px;
     border-left: 1px solid #ccc;
-
+    overflow: hidden;
     h3 {
       padding: 10px 20px;
+      margin-top: -1px;
       font-weight: normal;
       font-size: 16px;
       border-top: 1px solid #eee;
       cursor: pointer;
-
-      &:nth-of-type(2) {
+      &:nth-of-type(2){
         border-bottom: 1px solid #eee;
       }
     }
-
     .button {
       background-color: #2bb964;
       height: 36px;
@@ -164,11 +167,16 @@ export default {
       margin-top: 18px;
       cursor: pointer;
     }
-
-    .login, .register {
-      padding: 10px 20px;
+    .login,.register {
+      padding: 0px 20px;
       border-top: 1px solid #eee;
-
+      height: 0;
+      overflow: hidden;
+      transition: height .4s;
+      &.show {
+        height: 193px;
+      }
+      //input框聚焦特效
       input {
         display: block;
         width: 100%;
@@ -181,23 +189,18 @@ export default {
         font-size: 14px;
         margin-top: 10px;
       }
-
-      //input框聚焦特效
       input:focus {
         border: 3px solid #9dcaf8;
       }
-
       p {
         font-size: 12px;
         margin-top: 10px;
         color: #444;
       }
-
       .error {
         color: red;
       }
     }
-
     .login {
       border-top: 0;
     }
