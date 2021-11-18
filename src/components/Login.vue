@@ -35,8 +35,16 @@
   </div>
 </template>
 
-
 <script>
+import request from "@/helpers/request";
+
+//模拟一个请求的使用
+request('/auth/login','Post',{username:"hunger",password:"123456"})
+  .then(data=>{
+    console.log(data)
+})
+
+
 export default {
   name: 'Login',
   data() {
