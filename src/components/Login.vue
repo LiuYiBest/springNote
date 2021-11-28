@@ -39,11 +39,11 @@
 import request from "@/helpers/request";
 
 //模拟一个请求的使用
-request('/auth/login','Post',{username:"hunger",password:"123456"})
-  .then(data=>{
-    console.log(data)
-})
-
+// request('/auth/login','Post',{username:"hunger",password:"123456"})
+//   .then(data=>{
+//     console.log(data)
+// })
+//
 
 export default {
   name: 'Login',
@@ -95,7 +95,10 @@ export default {
       } else {
         this.register.isError = false
         this.register.notice = ''
-        console.log(`开始注册..., username: ${this.register.username} , password: ${this.register.password}`)
+        console.log(`开始注册..., username用户名: ${this.register.username} , password密码: ${this.register.password}`)
+
+        request('auth/register','POST',{username:this.register.username,password:this.register.password}).then(data=>{console.log(data)})
+
       }
     },
     onLogin() {
@@ -111,7 +114,8 @@ export default {
       }
       this.login.isError = false
       this.login.notice = ''
-      console.log(`开始登录..., username: ${this.login.username} , password: ${this.login.password}`)
+      // console.log(`开始登录..., username: ${this.login.username} , password: ${this.login.password}`)
+      request('auth/login','POST',{username:this.login.username,password:this.login.password}).then(data=>{console.log(data)})
     },
   }
 }
