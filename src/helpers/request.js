@@ -11,8 +11,6 @@ axios.defaults.withCredentials = true
 
 // 第一个参数url地址  第二个传递的类型(默认Get)  第三个参数是传递的数据（默认空）
 export default function request(url, type = 'GET', data = {}) {
-  //    axios本身return的也是promise  再包裹一次 对数据进行二次处理    axios中get和post使用方法不一样
-  //如果 `validateStatus` 返回 `true` (或者设置为 `null` 或 `undefined`)，promise 将被 resolve; 否则，promise 将被 rejecte
   return new Promise((resolve, reject) => {
     let option = {
       url,
