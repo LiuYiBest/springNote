@@ -38,12 +38,17 @@
 <script>
 import request from "@/helpers/request";
 
-//模拟一个请求的使用
+// 模拟一个请求的使用
 // request('/auth/login','Post',{username:"hunger",password:"123456"})
 //   .then(data=>{
 //     console.log(data)
 // })
-//
+
+//调用用户接口 获取用户的状态
+request('/auth')
+ .then(data=>{
+   console.log(data)
+  })
 
 export default {
   name: 'Login',
@@ -80,7 +85,7 @@ export default {
     },
     //点击注册和登录
     onRegister() {
-      console.log('register')
+      // console.log('register')
       //  判断用户名是否合法
       if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
         this.register.isError = true
@@ -102,8 +107,7 @@ export default {
           username: this.register.username, password: this.register.password
         }).then(
           data => {
-            console.log(data
-            )
+            console.log('注册', data)
           })
       }
     },
@@ -125,7 +129,7 @@ export default {
       request('auth/login', 'POST', {
         username: this.login.username, password: this.login.password
       }).then(data => {
-        console.log(data)
+        console.log('登录', data)
       })
     },
   }
