@@ -7,6 +7,7 @@ import baseURLConfig from './config-baseURL'     //导入默认的URL
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 //服务器接口的域名
 axios.defaults.baseURL = baseURLConfig.baseURL
+//是否允许跨域请求
 axios.defaults.withCredentials = true
 
 // 第一个参数url地址  第二个传递的类型(默认Get)  第三个参数是传递的数据（默认空）

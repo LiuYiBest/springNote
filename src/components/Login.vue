@@ -14,7 +14,7 @@
                 <!--   监听用户输入 绑定用户名和密码  -->
                 <input type="text" v-model="register.username" placeholder="用户名">
                 <input type="password" v-model="register.password" @keyup.enter="onRegister" placeholder="密码">
-                <p v-bind:class="{error: register.isError}"> {{register.notice}}</p>
+                <p v-bind:class="{error: register.isError}"> {{ register.notice }}</p>
                 <div class="button" @click="onRegister">创建账号</div>
               </div>
             </transition>
@@ -23,8 +23,8 @@
             <transition name="slide">
               <div v-bind:class="{show: isShowLogin}" class="login">
                 <input type="text" v-model="login.username" placeholder="输入用户名">
-                <input type="password" v-model="login.password" @keyup.enter="onLogin"  placeholder="密码">
-                <p v-bind:class="{error: login.isError}"> {{login.notice}}</p>
+                <input type="password" v-model="login.password" @keyup.enter="onLogin" placeholder="密码">
+                <p v-bind:class="{error: login.isError}"> {{ login.notice }}</p>
                 <div class="button" @click="onLogin"> 登录</div>
               </div>
             </transition>
@@ -95,10 +95,16 @@ export default {
       } else {
         this.register.isError = false
         this.register.notice = ''
-        console.log(`开始注册..., username用户名: ${this.register.username} , password密码: ${this.register.password}`)
 
-        request('auth/register','POST',{username:this.register.username,password:this.register.password}).then(data=>{console.log(data)})
-
+        //调用请求接口，实现注册功能
+        // console.log(`开始注册..., username用户名: ${this.register.username} , password密码: ${this.register.password}`)
+        request('auth/register', 'POST', {
+          username: this.register.username, password: this.register.password
+        }).then(
+          data => {
+            console.log(data
+            )
+          })
       }
     },
     onLogin() {
@@ -114,8 +120,13 @@ export default {
       }
       this.login.isError = false
       this.login.notice = ''
+      //调用请求接口，实现登录功能
       // console.log(`开始登录..., username: ${this.login.username} , password: ${this.login.password}`)
-      request('auth/login','POST',{username:this.login.username,password:this.login.password}).then(data=>{console.log(data)})
+      request('auth/login', 'POST', {
+        username: this.login.username, password: this.login.password
+      }).then(data => {
+        console.log(data)
+      })
     },
   }
 }
@@ -134,10 +145,12 @@ export default {
   display: table;
   transition: opacity .3s ease;
 }
+
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
 }
+
 .modal-container {
   width: 800px;
   height: 500px;
@@ -148,15 +161,18 @@ export default {
   transition: all .3s ease;
   font-family: Helvetica, Arial, sans-serif;
   display: flex;
+
   .main {
     flex: 1;
     background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center center no-repeat;
     background-size: contain;
   }
+
   .form {
     width: 270px;
     border-left: 1px solid #ccc;
     overflow: hidden;
+
     h3 {
       padding: 10px 20px;
       margin-top: -1px;
@@ -164,10 +180,12 @@ export default {
       font-size: 16px;
       border-top: 1px solid #eee;
       cursor: pointer;
-      &:nth-of-type(2){
+
+      &:nth-of-type(2) {
         border-bottom: 1px solid #eee;
       }
     }
+
     .button {
       background-color: #2bb964;
       height: 36px;
@@ -179,15 +197,18 @@ export default {
       margin-top: 18px;
       cursor: pointer;
     }
-    .login,.register {
+
+    .login, .register {
       padding: 0px 20px;
       border-top: 1px solid #eee;
       height: 0;
       overflow: hidden;
       transition: height .4s;
+
       &.show {
         height: 193px;
       }
+
       //input框聚焦特效
       input {
         display: block;
@@ -201,18 +222,22 @@ export default {
         font-size: 14px;
         margin-top: 10px;
       }
+
       input:focus {
         border: 3px solid #9dcaf8;
       }
+
       p {
         font-size: 12px;
         margin-top: 10px;
         color: #444;
       }
+
       .error {
         color: red;
       }
     }
+
     .login {
       border-top: 0;
     }
