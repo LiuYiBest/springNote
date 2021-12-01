@@ -37,8 +37,7 @@
 
 <script>
 import request from "@/helpers/request";
-import Auth from "@/apis/auth";
-import auth from "../apis/auth";
+import Auth from "../apis/auth";
 
 // Auth.getInfo().then(data => {
 //
@@ -109,10 +108,17 @@ export default {
 
         //调用请求接口，实现注册功能
         // console.log(`开始注册..., username用户名: ${this.register.username} , password密码: ${this.register.password}`)
-        auth.register({username: this.register.username, password: this.register.password})
+        Auth.register({username: this.register.username, password: this.register.password})
           .then(data => {
+            this.register.isError = false
+            this.register.notice = ''
+            this.$router.push({path: 'notebooks'})
             console.log('注册', data)
-          })
+          }).catch(data => {
+          console.log(data)
+          this.register.isError = true
+          this.register.notice = data.msg
+        })
       }
     },
     //用户登录
@@ -130,11 +136,12 @@ export default {
 
       //调用请求接口，实现登录功能
       // console.log(`开始登录..., username: ${this.login.username} , password: ${this.login.password}`)
-      auth.login({username: this.login.username, password: this.login.password})
+      Auth.login({username: this.login.username, password: this.login.password})
         .then(data => {
           //登录成功隐藏提示
           this.login.isError = false
           this.login.notice = ''
+          this.$router.push({path: 'notebooks'})
           console.log('登录', data)
         }).catch(data => {
         console.log('登录失败'.data)
