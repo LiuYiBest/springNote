@@ -1,15 +1,30 @@
 <template>
-  <span :title="user.username">{{slug}}</span>
+  <span :title="username">{{ slug }}</span>
 </template>
 
 <script>
+import Auth from '@/apis/auth'
+
 export default {
+
   data() {
     return {
-      user: {
-        username: 'Valley'
-      },
-      slug: 'V'
+      username: '未登录',
+    }
+  },
+  created() {
+    //获取用户的数据
+    Auth.getInfo().then(res=>{
+      // console.log("用户的数据",res)
+      if(res.isLogin){
+        this.username = res.data.username
+      }
+    })
+  },
+  //  使用计算属性获取用户的名称
+  computed: {
+    slug() {
+      return this.username.charAt(0)
     }
   }
 }
