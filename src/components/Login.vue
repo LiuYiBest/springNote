@@ -40,9 +40,9 @@ import request from "@/helpers/request";
 import Auth from "@/apis/auth";
 import auth from "../apis/auth";
 
-Auth.getInfo().then(data => {
-
-})
+// Auth.getInfo().then(data => {
+//
+// })
 
 // 模拟一个请求的使用
 // request('/auth/login','Post',{username:"hunger",password:"123456"})
@@ -89,7 +89,7 @@ export default {
     validRegister() {
       console.log(this.register.username)
     },
-    //点击注册和登录
+    //用户注册
     onRegister() {
       // console.log('register')
       //  判断用户名是否合法
@@ -115,6 +115,7 @@ export default {
           })
       }
     },
+    //用户登录
     onLogin() {
       if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.login.username)) {
         this.login.isError = true
@@ -126,14 +127,20 @@ export default {
         this.login.notice = '密码长度为6~16个字符'
         return
       }
-      this.login.isError = false
-      this.login.notice = ''
+
       //调用请求接口，实现登录功能
       // console.log(`开始登录..., username: ${this.login.username} , password: ${this.login.password}`)
       auth.login({username: this.login.username, password: this.login.password})
         .then(data => {
+          //登录成功隐藏提示
+          this.login.isError = false
+          this.login.notice = ''
           console.log('登录', data)
-        })
+        }).catch(data => {
+        console.log('登录失败'.data)
+        this.login.isError = true
+        this.login.notice = data.msg   //提示密码不正确
+      })
     },
   }
 }
