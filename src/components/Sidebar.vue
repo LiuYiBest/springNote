@@ -32,7 +32,10 @@ export  default {
     logout(){
       console.log('logout')
       //调用注销登录的接口
-      Auth.logout().then(data=>{console.log("注销",data)})
+      Auth.logout().then(data=>{
+        this.$router.push({path : 'login'})
+        console.log("注销",data)
+      })
     }
   }
 }
