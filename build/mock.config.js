@@ -7,7 +7,8 @@ const mockBaseURL = 'http://localhost:3000'
 const realBaseURL = 'http://note-server.hunger-valley.com'
 
 //如果没有传递参数  则默认isDev是true   isDev是否开发环境
-exports.config = fuction({isDev = true} = {isDev:true}){
+exports.config = function ({isDev = true} = {isDev:true})
+{
   let fileTxt = `
     module.exports={
     baseURL: '${isDev ? mockBaseURL :realBaseURL}'
