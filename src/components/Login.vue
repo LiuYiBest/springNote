@@ -51,10 +51,10 @@ Auth.getInfo().then(data => {
 // })
 
 //调用用户接口 获取用户的状态
-request('/auth')
-  .then(data => {
-    console.log("用户的登录状态",data)
-  })
+// request('/auth')
+//   .then(data => {
+//     console.log("用户的登录状态",data)
+//   })
 
 export default {
   name: 'Login',
