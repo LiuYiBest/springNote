@@ -37,6 +37,12 @@
 
 <script>
 import request from "@/helpers/request";
+import Auth from "@/apis/auth";
+import auth from "../apis/auth";
+
+Auth.getInfo().then(data => {
+
+})
 
 // 模拟一个请求的使用
 // request('/auth/login','Post',{username:"hunger",password:"123456"})
@@ -46,8 +52,8 @@ import request from "@/helpers/request";
 
 //调用用户接口 获取用户的状态
 request('/auth')
- .then(data=>{
-   console.log(data)
+  .then(data => {
+    console.log("用户的登录状态",data)
   })
 
 export default {
@@ -103,10 +109,8 @@ export default {
 
         //调用请求接口，实现注册功能
         // console.log(`开始注册..., username用户名: ${this.register.username} , password密码: ${this.register.password}`)
-        request('auth/register', 'POST', {
-          username: this.register.username, password: this.register.password
-        }).then(
-          data => {
+        auth.register({username: this.register.username, password: this.register.password})
+          .then(data => {
             console.log('注册', data)
           })
       }
@@ -126,11 +130,10 @@ export default {
       this.login.notice = ''
       //调用请求接口，实现登录功能
       // console.log(`开始登录..., username: ${this.login.username} , password: ${this.login.password}`)
-      request('auth/login', 'POST', {
-        username: this.login.username, password: this.login.password
-      }).then(data => {
-        console.log('登录', data)
-      })
+      auth.login({username: this.login.username, password: this.login.password})
+        .then(data => {
+          console.log('登录', data)
+        })
     },
   }
 }

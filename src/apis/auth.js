@@ -10,15 +10,19 @@ const  URL = {
 
 //导出接口
 export default {
+  //注册方法
   register({username, password}){
     return request(URL.REGISTER,'POST',{username,password})
   },
+  //登录方法
   login({username,password}){
     return request(URL.LOGIN,'POST',{username,password})
   },
+  //注销方法
   logout() {
     return request(URL.LOGOUT)
   },
+  //登录状态
   getInfo(){
     return request(URL.GET_INFO)
   }

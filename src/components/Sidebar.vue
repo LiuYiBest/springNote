@@ -21,7 +21,8 @@
 
 <script >
 import Avatar from "@/components/Avatar";
-import request from "@/helpers/request";
+// import request from "@/helpers/request";
+import Auth from "@/apis/auth"
 
 export  default {
   components:{
@@ -31,9 +32,7 @@ export  default {
     logout(){
       console.log('logout')
       //调用注销登录的接口
-      request('/auth/logout').then((data)=>{
-          console.log(data)
-        })
+      Auth.logout().then(data=>{console.log("注销",data)})
     }
   }
 }
