@@ -36,8 +36,9 @@
 </template>
 
 <script>
-import request from "@/helpers/request";
+// import request from "@/helpers/request";
 import Auth from "../apis/auth";
+import Bus from '../helpers/bus'
 
 // Auth.getInfo().then(data => {
 //
@@ -113,6 +114,7 @@ export default {
             this.register.isError = false
             this.register.notice = ''
             this.$router.push({path: 'notebooks'})
+            Bus.$emit('userInfo',{username: this.register.username})
             console.log('注册', data)
           }).catch(data => {
           console.log(data)
@@ -142,6 +144,7 @@ export default {
           this.login.isError = false
           this.login.notice = ''
           this.$router.push({path: 'notebooks'})
+          Bus.$emit('userInfo',{username: this.login.username})
           console.log('登录', data)
         }).catch(data => {
         console.log('登录失败'.data)
