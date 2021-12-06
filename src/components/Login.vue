@@ -144,7 +144,7 @@ export default {
           this.login.isError = false
           this.login.notice = ''
           this.$router.push({path: 'notebooks'})
-          Bus.$emit('userInfo',{username: this.login.username})
+          Bus.$emit("userInfo",{username: this.login.username})
           console.log('登录', data)
         }).catch(data => {
         console.log('登录失败'.data)
