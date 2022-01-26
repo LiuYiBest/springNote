@@ -7,7 +7,8 @@
       <div class="layout">
         <h3>笔记本列表({{ notebooks.length }})</h3>
         <div class="book-list">
-          <router-link v-for="notebook in notebooks" to="/note/1" class="notebook">
+<!--          <router-link v-for="notebook in notebooks" to="`/note?notebookId=${notebook.id}`" class="notebook">-->
+            <router-link v-for="notebook in notebooks" :to="`/note?notebookId=${notebook.id}`" class="notebook">
             <div>
               <span class="iconfont icon-notebook"></span> {{ notebook.title }}
               <!--      noteCounts 笔记本计数        -->
@@ -84,32 +85,51 @@ export default {
     },
     //编辑笔记本标题
     onEdit(notebook) {
-      console.log('edit...', notebook)
-      let title = window.prompt('修改标题', notebook.title)
-      //一个noteBooks的id 和title对象
-      Notebooks.updateNotebook(notebook.id, {title})
-        .then(res => {
-          console.log("编辑笔记本", res)
-          //修改当前标题
-          notebook.title = title
-          alert(res.msg)
+      let title = ''
+      this.$prompt('输入新笔记本标题', '修改笔记本', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        closeOnClickModal: false,
+        inputPattern: /^.{1,30}$/,
+        inputErrorMessage: '标题不能为空，且不能超过30个字符'
+      }).then(({value}) => {
+        title = value
+        //调用修改笔记本接口
+        return Notebooks.updateNotebook(notebook.id, {title})
+      }).then(res => {
+        notebook.title = title
+        this.$message({
+          type: 'success',
+          message: res.msg
+        });
+      }).catch((res) => {
+        this.$message({
+          type: 'error',
+          message: '取消输入'
         })
-    }
-    ,
+      })
+    },
+
 //删除笔记本
     onDelete(notebook) {
-      console.log('delete', notebook)
-      //用户确认是否输出  Boolean类型
-      let isConfirm = window.confirm('你确定要删除吗?')
-      if (isConfirm) {
-        Notebooks.deleteNotebook(notebook.id)
-          .then(res => {
-            console.log("删除笔记本", res)
-            //删除数据库的内容后  把页面指定book数据的下标删除掉
-            this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
-            alert(res.msg)
-          })
-      }
+      this.$confirm('你确定要删除笔记本吗?', '删除笔记本', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return Notebooks.deleteNotebook(notebook.id)
+      }).then((res) => {
+        this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
+        this.$message({
+          type: 'success',
+          message: res.msg
+        })
+      }).catch((res)=>{
+        this.$message({
+          type: 'error',
+          message: '取消删除'
+        })
+      })
     }
   }
 }

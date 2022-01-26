@@ -12,7 +12,7 @@
         <i class="iconfont icon-trash"></i>
       </router-link>
     </div>
-<!--    注销登录-->
+    <!--    注销登录-->
     <div class="logout" >
       <i class="iconfont icon-logout" @click="logout"></i>
     </div>

@@ -7,7 +7,7 @@
 
 <script>
 import Sidebar from "./components/Sidebar";
-// test
+
 export default {
   name: 'App',
   components:{
