@@ -40,9 +40,7 @@
 import Auth from "../apis/auth";
 import Bus from '../helpers/bus'
 
-// Auth.getInfo().then(data => {
-//
-// })
+
 
 // 模拟一个请求的使用
 // request('/auth/login','Post',{username:"hunger",password:"123456"})
@@ -91,7 +89,6 @@ export default {
     },
     //用户注册
     onRegister() {
-      // console.log('register')
       //  判断用户名是否合法
       if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
         this.register.isError = true

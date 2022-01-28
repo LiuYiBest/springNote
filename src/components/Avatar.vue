@@ -19,7 +19,6 @@ export default {
     })
     //获取用户的数据
     Auth.getInfo().then(res=>{
-      // console.log("用户的数据",res)
       if(res.isLogin){
         this.username = res.data.username
       }
