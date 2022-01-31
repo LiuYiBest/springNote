@@ -16,7 +16,7 @@
     </div>
     <ul class="notes">
       <li v-for="note in notes">
-        <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
+        <router-link :to="`/note?noteId=${note.id}`">
           <span class="date">{{note.updatedAtFriendly}}</span>
           <span class="title">{{note.title}}</span>
         </router-link>
@@ -26,9 +26,9 @@
 </template>
 
 <script>
-import Notebooks from '@/apis/notebooks'
-import Notes from '@/apis/notes'
-import Bus from '@/helpers/bus'
+// import Notebooks from '@/apis/notebooks'
+// import Notes from '@/apis/notes'
+// import Bus from '@/helpers/bus'
 
 export default {
   // created() {
@@ -70,7 +70,6 @@ export default {
   },
 
   methods: {
-
     handleCommand(cmd){
       console.log(cmd)
     }
@@ -97,13 +96,12 @@ export default {
 
   }
 }
-
 </script>
 
 
 <style lang="less" >
 //@import url(../assets/css/note-sidebar.less);
-
+@import url(../assets/css/note-sidebar.less);
 </style>
 
 
