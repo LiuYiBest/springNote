@@ -35,7 +35,10 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-  color: blue;
+#note{
+  display: flex;
+  align-items: stretch;
+  background-color: #ffffff;
+  flex: 1;
 }
 </style>
