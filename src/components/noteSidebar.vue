@@ -1,6 +1,6 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note" @click="addNote" >添加笔记</span>
+    <span class="btn add-note" >添加笔记</span>
     <el-dropdown class="notebook-title"  @command="handleCommand" placement="bottom">
       <span class="el-dropdown-link">
         我的笔记本1 <i class="iconfont icon-down"></i>
@@ -31,48 +31,69 @@ import Notes from '@/apis/notes'
 import Bus from '@/helpers/bus'
 
 export default {
-  created() {
-    Notebooks.getAll()
-      .then(res => {
-        this.notebooks = res.data
-        this.curBook = this.notebooks.find(notebook => notebook.id == this.$route.query.notebookId)
-          || this.notebooks[0] || {}
-        return Notes.getAll({ notebookId: this.curBook.id })
-      }).then(res => {
-      this.notes = res.data
-      this.$emit('update:notes', this.notes)
-      Bus.$emit('update:notes', this.notes)
-    })
-  },
+  // created() {
+  //   Notebooks.getAll()
+  //     .then(res => {
+  //       this.notebooks = res.data
+  //       this.curBook = this.notebooks.find(notebook => notebook.id == this.$route.query.notebookId)
+  //         || this.notebooks[0] || {}
+  //       return Notes.getAll({ notebookId: this.curBook.id })
+  //     }).then(res => {
+  //     this.notes = res.data
+  //     this.$emit('update:notes', this.notes)
+  //     Bus.$emit('update:notes', this.notes)
+  //   })
+  // },
 
   data() {
     return {
-      notebooks: [],
-      notes:[],
-      curBook: {}
+      notebooks: [
+        {
+          id: 1,
+          title: 'hello1',
+        },
+        {
+          id: 2,
+          title: 'hello2',
+          updatedAtFriendly: '3分钟前'
+        }
+      ],
+      notes:[
+        {
+          id:11,
+          title: '第一个笔记',
+          updatedAtFriendly: '刚刚'
+        }
+      ],
+      // curBook: {}
     }
   },
 
   methods: {
-    handleCommand(notebookId) {
-      if(notebookId == 'trash') {
-        return this.$router.push({ path: '/trash'})
-      }
-      this.curBook = this.notebooks.find(notebook => notebook.id == notebookId)
-      Notes.getAll({ notebookId })
-        .then(res => {
-          this.notes = res.data
-          this.$emit('update:notes', this.notes)
-        })
-    },
 
-    addNote() {
-      Notes.addNote({ notebookId: this.curBook.id })
-        .then(res => {
-          console.log(res)
-          this.notes.unshift(res.data)
-        })
+    handleCommand(cmd){
+      console.log(cmd)
     }
+
+    // handleCommand(notebookId) {
+    //   if(notebookId == 'trash') {
+    //     return this.$router.push({ path: '/trash'})
+    //   }
+    //   this.curBook = this.notebooks.find(notebook => notebook.id == notebookId)
+    //   Notes.getAll({ notebookId })
+    //     .then(res => {
+    //       this.notes = res.data
+    //       this.$emit('update:notes', this.notes)
+    //     })
+    // },
+    //
+    // addNote() {
+    //   Notes.addNote({ notebookId: this.curBook.id })
+    //     .then(res => {
+    //       console.log(res)
+    //       this.notes.unshift(res.data)
+    //     })
+    // }
 
   }
 }
@@ -81,7 +102,7 @@ export default {
 
 
 <style lang="less" >
-@import url(../assets/css/note-sidebar.less);
+//@import url(../assets/css/note-sidebar.less);
 
 </style>
 
