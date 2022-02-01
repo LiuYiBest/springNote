@@ -1,88 +1,96 @@
 <template>
-  <div class="note-sidebar">
-    <span class="btn add-note" @click="addNote" >添加笔记</span>
-    <el-dropdown class="notebook-title"  @command="handleCommand" placement="bottom">
-      <span class="el-dropdown-link">
-        {{curBook.title}} <i class="iconfont icon-down"></i>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{notebook.title}}</el-dropdown-item>
-        <el-dropdown-item  command="trash">回收站</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-    <div class="menu">
-      <div>更新时间</div>
-      <div>标题</div>
-    </div>
-    <ul class="notes">
-      <li v-for="note in notes">
-        <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
-          <span class="date">{{note.updatedAtFriendly}}</span>
-          <span class="title">{{note.title}}</span>
-        </router-link>
-      </li>
-    </ul>
+  <div class="detail" id="notebook-list">
+    <header>
+      <a href="#" class="btn" @click.prevent="onCreate"><i class="iconfont icon-plus"></i> 新建笔记本</a>
+    </header>
+    <main>
+      <div class="layout">
+        <h3>笔记本列表({{notebooks.length}})</h3>
+        <div class="book-list">
+          <router-link v-for="notebook in notebooks" :to="`/note?notebookId=${notebook.id}`" class="notebook">
+            <div>
+              <span class="iconfont icon-notebook"></span> {{notebook.title}}
+              <span>{{notebook.noteCounts}}</span>
+              <span class="action" @click.stop.prevent="onEdit(notebook)">编辑</span>
+              <span class="action" @click.stop.prevent="onDelete(notebook)">删除</span>
+              <span class="date">{{notebook.friendlyCreatedAt}}</span>
+            </div>
+          </router-link>
+        </div>
+      </div>
+
+    </main>
+
   </div>
 </template>
-
 <script>
-import Notebooks from '../apis/notebooks'
-import Notes from '../apis/notes'
-import Bus from '../helpers/bus'
+import Auth from '@/apis/auth'
+import Notebooks from '@/apis/notebooks'
+import { friendlyDate } from '@/helpers/util'
+import { mapState, mapActions, mapGetters } from 'vuex'
+
+//window.Notebooks = Notebooks
 
 export default {
-  created() {
-    Notebooks.getAll()
-      .then(res => {
-        this.notebooks = res.data
-        this.curBook = this.notebooks.find(notebook => notebook.id == this.$route.query.notebookId)
-          || this.notebooks[0] || {}
-        return Notes.getAll({ notebookId: this.curBook.id })
-      }).then(res => {
-      this.notes = res.data
-      this.$emit('update:notes', this.notes)
-      Bus.$emit('update:notes', this.notes)
-    })
+  data () {
+    return {}
   },
 
-  data() {
-    return {
-      notebooks: [],
-      notes:[],
-      curBook: {}
-    }
+  created() {
+    this.checkLogin({ path: '/login' })
+    this.getNotebooks()
+  },
+
+  computed: {
+    ...mapGetters(['notebooks'])
   },
 
   methods: {
-    handleCommand(notebookId) {
-      if(notebookId == 'trash') {
-        return this.$router.push({ path: '/trash'})
-      }
-      this.curBook = this.notebooks.find(notebook => notebook.id == notebookId)
-      Notes.getAll({ notebookId })
-        .then(res => {
-          this.notes = res.data
-          this.$emit('update:notes', this.notes)
-        })
+    ...mapActions([
+      'getNotebooks',
+      'addNotebook',
+      'updateNotebook',
+      'deleteNotebook',
+      'checkLogin'
+    ]),
+
+    onCreate() {
+      this.$prompt('输入新笔记本标题', '创建笔记本', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^.{1,30}$/,
+        inputErrorMessage: '标题不能为空，且不超过30个字符'
+      }).then(({ value }) => {
+        this.addNotebook({ title: value })
+      })
     },
 
-    addNote() {
-      Notes.addNote({ notebookId: this.curBook.id })
-        .then(res => {
-          console.log(res)
-          this.notes.unshift(res.data)
-        })
-    }
+    onEdit(notebook) {
+      let title = ''
+      this.$prompt('输入新笔记本标题', '修改笔记本', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^.{1,30}$/,
+        inputValue: notebook.title,
+        inputErrorMessage: '标题不能为空，且不超过30个字符'
+      }).then(({ value }) => {
+        this.updateNotebook({ notebookId: notebook.id, title: value })
+      })
+    },
 
+    onDelete(notebook) {
+      this.$confirm('确认要删除笔记本吗', '删除笔记本', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteNotebook({ notebookId: notebook.id })
+      })
+    }
   }
 }
-
 </script>
 
-
-<style lang="less" >
-@import url(../assets/css/note-sidebar.less);
-
+<style lang="less" scoped>
+@import url(../assets/css/notebook-list.less);
 </style>
-
-
