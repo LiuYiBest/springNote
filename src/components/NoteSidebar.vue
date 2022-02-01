@@ -1,13 +1,13 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note" >添加笔记</span>
-    <el-dropdown class="notebook-title"  @command="handleCommand" placement="bottom">
+    <span class="btn add-note">添加笔记</span>
+    <el-dropdown class="notebook-title" @command="handleCommand" placement="bottom">
       <span class="el-dropdown-link">
-        我的笔记本1 <i class="iconfont icon-down"></i>
+        {{curBook.title}}  <i class="iconfont icon-down"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{notebook.title}}</el-dropdown-item>
-        <el-dropdown-item  command="trash">回收站</el-dropdown-item>
+        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{ notebook.title }}</el-dropdown-item>
+        <el-dropdown-item command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <div class="menu">
@@ -16,9 +16,9 @@
     </div>
     <ul class="notes">
       <li v-for="note in notes">
-        <router-link :to="`/note?noteId=${note.id}`">
-          <span class="date">{{note.updatedAtFriendly}}</span>
-          <span class="title">{{note.title}}</span>
+        <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
+          <span class="date">{{ note.updatedAtFriendly }}</span>
+          <span class="title">{{ note.title }}</span>
         </router-link>
       </li>
     </ul>
@@ -35,12 +35,12 @@ export default {
     Notebooks.getAll()
       .then(res => {
         this.notebooks = res.data
-        // this.curBook = this.notebooks.find(notebook => notebook.id == this.$route.query.notebookId)
-        //   || this.notebooks[0] || {}
-        // return Notes.getAll({ notebookId: this.curBook.id })
-      // }).then(res => {
-      // this.notes = res.data
-      // this.$emit('update:notes', this.notes)
+        this.curBook = this.notebooks.find(notebook => notebook.id == this.$route.query.notebookId) || this.notebooks[0] || {}
+        //获取笔记
+        return Notes.getAll({notebookId: this.curBook.id})
+      }).then(res => {
+      this.notes = res.data
+      this.$emit('update:notes', this.notes)
       // Bus.$emit('update:notes', this.notes)
     })
   },
@@ -48,33 +48,23 @@ export default {
   data() {
     return {
       notebooks: [],
-      notes:[
-        {
-          id:11,
-          title: '第一个笔记',
-          updatedAtFriendly: '刚刚'
-        }
-      ],
-      // curBook: {}
+      notes: [],
+      curBook: {}
     }
   },
 
   methods: {
-
     //  笔记切换
     handleCommand(notebookId) {
-      // if(notebookId == 'trash') {
-      //   return this.$router.push({ path: '/trash'})
-      // }
-      // this.curBook = this.notebooks.find(notebook => notebook.id == notebookId)
-      if(notebookId != 'trash'){
-        Notes.getAll({ notebookId })
-          .then(res => {
-            this.notes = res.data
-            // this.$emit('update:notes', this.notes)
-          })
+      if (notebookId == 'trash') {
+        return this.$router.push({path: '/trash'})
       }
-
+      this.curBook = this.notebooks.find(notebook => notebook.id == notebookId)
+      Notes.getAll({notebookId})
+        .then(res => {
+          this.notes = res.data
+          this.$emit('update:notes', this.notes)
+        })
     },
     //
     // addNote() {
@@ -84,14 +74,12 @@ export default {
     //       this.notes.unshift(res.data)
     //     })
     // }
-
   }
 }
 </script>
 
 
-<style lang="less" >
-//@import url(../assets/css/note-sidebar.less);
+<style lang="less">
 @import url(../assets/css/note-sidebar.less);
 </style>
 
