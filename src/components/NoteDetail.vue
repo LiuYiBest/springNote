@@ -27,26 +27,75 @@
 </template>
 
 <script>
-import Auth from "../apis/auth";
-import  NoteSidebar from  "../components/NoteSidebar.vue"
+import Auth from '../apis/auth'
+import NoteSidebar from '../components/NoteSidebar'
+import Bus from '../helpers/bus'
+import _ from 'lodash'
+import Notes from '../apis/notes'
+import MarkdownIt from 'markdown-it'
+
+let md = new MarkdownIt()
+
 
 export default {
-  name: 'NoteDetail',
-  components:{
+  components: {
     NoteSidebar
   },
 
-  data() {
+  data () {
     return {
-      msg: '笔记详情页'
+      curNote: {},
+      notes: [],
+      statusText: '笔记未改动',
+      isShowPreview: false
     }
   },
+
   created() {
-    Auth.getInfo().then(res => {
-      if (!res.isLogin) {
-        this.$router.push({path: '/login'})
-      }
+    Auth.getInfo()
+      .then(res => {
+        if(!res.isLogin) {
+          this.$router.push({ path: '/login' })
+        }
+      })
+    Bus.$once('update:notes', val => {
+      this.curNote = val.find(note => note.id == this.$route.query.noteId) || {}
     })
+  },
+
+  computed: {
+    previewContent() {
+      console.log(this.curNote.content||'')
+      return md.render(this.curNote.content||'')
+    }
+  },
+
+  methods: {
+    updateNote: _.debounce(function() {
+      Notes.updateNote({ noteId: this.curNote.id },
+        { title: this.curNote.title, content: this.curNote.content })
+        .then(data => {
+          this.statusText = '已保存'
+        }).catch(data => {
+        this.statusText = '保存出错'
+      })
+
+    }, 300),
+
+    deleteNote() {
+      Notes.deleteNote({ noteId: this.curNote.id })
+        .then(data => {
+          this.$message.success(data.msg)
+          this.notes.splice(this.notes.indexOf(this.curNote), 1)
+          this.$router.replace({ path: '/note' })
+        })
+    }
+
+  },
+
+  beforeRouteUpdate (to, from, next) {
+    this.curNote = this.notes.find(note => note.id == to.query.noteId) || {}
+    next()
   }
 }
 </script>
