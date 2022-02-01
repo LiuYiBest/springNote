@@ -9,7 +9,6 @@ const URL = {
 }
 
 export default {
-  //获取所有笔记   传递一个对象 有个属性是noteId
   getAll({ notebookId }) {
     return new Promise((resolve, reject) => {
       request(URL.GET.replace(':notebookId', notebookId))
@@ -23,7 +22,6 @@ export default {
           })
           resolve(res)
         }).catch(err => {
-
         reject(err)
       })
     })
@@ -48,6 +46,7 @@ export default {
         reject(err)
       })
     })
-    return request(URL.ADD.replace(':notebookId', notebookId), 'POST', { title, content })
+    //return request(URL.ADD.replace(':notebookId', notebookId), 'POST', { title, content })
   }
+
 }
