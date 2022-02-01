@@ -22,8 +22,8 @@ export default {
           })
           resolve(res)
         }).catch(err => {
-        reject(err)
-      })
+          reject(err)
+        })
     })
   },
 
@@ -43,8 +43,8 @@ export default {
           res.data.updatedAtFriendly = friendlyDate(res.data.updatedAt)
           resolve(res)
         }).catch(err => {
-        reject(err)
-      })
+          reject(err)
+        })
     })
     //return request(URL.ADD.replace(':notebookId', notebookId), 'POST', { title, content })
   }
