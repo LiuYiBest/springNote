@@ -1,96 +1,109 @@
 <template>
-  <div class="detail" id="notebook-list">
-    <header>
-      <a href="#" class="btn" @click.prevent="onCreate"><i class="iconfont icon-plus"></i> 新建笔记本</a>
-    </header>
-    <main>
-      <div class="layout">
-        <h3>笔记本列表({{notebooks.length}})</h3>
-        <div class="book-list">
-          <router-link v-for="notebook in notebooks" :to="`/note?notebookId=${notebook.id}`" class="notebook">
-            <div>
-              <span class="iconfont icon-notebook"></span> {{notebook.title}}
-              <span>{{notebook.noteCounts}}</span>
-              <span class="action" @click.stop.prevent="onEdit(notebook)">编辑</span>
-              <span class="action" @click.stop.prevent="onDelete(notebook)">删除</span>
-              <span class="date">{{notebook.friendlyCreatedAt}}</span>
-            </div>
-          </router-link>
-        </div>
-      </div>
-
-    </main>
-
+  <div class="note-sidebar">
+    <span v-if="curBook.id" class="btn add-note" @click="onAddNote" >添加笔记</span>
+    <span v-if="!curBook.id" class="notebook-title">无笔记本</span>
+    <el-dropdown v-if="curBook.id" class="notebook-title"  @command="handleCommand" placement="bottom">
+      <span class="el-dropdown-link">
+        {{curBook.title}} <i class="iconfont icon-down"></i>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{notebook.title}}</el-dropdown-item>
+        <el-dropdown-item  command="trash">回收站</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    
+    <div class="menu">
+      <div>更新时间</div>
+      <div>标题</div>
+    </div>
+    <ul class="notes">
+      <li v-for="note in notes">
+        <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
+          <span class="date">{{note.updatedAtFriendly}}</span>
+          <span class="title">{{note.title}}</span>          
+        </router-link>
+      </li>
+    </ul>
   </div>
 </template>
+
 <script>
-import Auth from '@/apis/auth'
-import Notebooks from '@/apis/notebooks'
-import { friendlyDate } from '@/helpers/util'
-import { mapState, mapActions, mapGetters } from 'vuex'
 
-//window.Notebooks = Notebooks
+  import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
-export default {
-  data () {
-    return {}
-  },
-
-  created() {
-    this.checkLogin({ path: '/login' })
-    this.getNotebooks()
-  },
-
-  computed: {
-    ...mapGetters(['notebooks'])
-  },
-
-  methods: {
-    ...mapActions([
-      'getNotebooks',
-      'addNotebook',
-      'updateNotebook',
-      'deleteNotebook',
-      'checkLogin'
-    ]),
-
-    onCreate() {
-      this.$prompt('输入新笔记本标题', '创建笔记本', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^.{1,30}$/,
-        inputErrorMessage: '标题不能为空，且不超过30个字符'
-      }).then(({ value }) => {
-        this.addNotebook({ title: value })
-      })
+  export default {
+    created() {
+      this.getNotebooks()
+        .then(() => {
+          this.setCurBook({ curBookId: this.$route.query.notebookId })
+          if(this.curBook.id) return this.getNotes({ notebookId: this.curBook.id})
+        }).then(() => {
+          this.setCurNote({ curNoteId: this.$route.query.noteId })
+          this.$router.replace({
+            path: '/note',
+            query: {
+              noteId: this.curNote.id,
+              notebookId: this.curBook.id
+            }
+          })
+        })
     },
 
-    onEdit(notebook) {
-      let title = ''
-      this.$prompt('输入新笔记本标题', '修改笔记本', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^.{1,30}$/,
-        inputValue: notebook.title,
-        inputErrorMessage: '标题不能为空，且不超过30个字符'
-      }).then(({ value }) => {
-        this.updateNotebook({ notebookId: notebook.id, title: value })
-      })
+    data() {
+      return {}
     },
 
-    onDelete(notebook) {
-      this.$confirm('确认要删除笔记本吗', '删除笔记本', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.deleteNotebook({ notebookId: notebook.id })
-      })
+    computed: {
+      ...mapGetters([
+        'notebooks',
+        'notes',
+        'curBook',
+        'curNote'
+        ])
+    },
+
+    methods: {
+      ...mapMutations([
+        'setCurBook',
+        'setCurNote'
+        ]),
+
+      ...mapActions([
+        'getNotebooks',
+        'getNotes',
+        'addNote'
+        ]),
+
+      handleCommand(notebookId) {
+        if(notebookId == 'trash') {
+          return this.$router.push({ path: '/trash'})
+        }
+        this.$store.commit('setCurBook', { curBookId: notebookId})
+        this.getNotes({ notebookId }).then(() => {
+          this.setCurNote()
+          this.$router.replace({
+            path: '/note',
+            query: {
+              noteId: this.curNote.id,
+              notebookId: this.curBook.id
+            }
+          })
+        })
+      },
+
+      onAddNote() {
+        this.addNote({ notebookId: this.curBook.id })
+      }
+
     }
   }
-}
+
 </script>
 
-<style lang="less" scoped>
-@import url(../assets/css/notebook-list.less);
+
+<style lang="less" >
+@import url(../assets/css/note-sidebar.less);
+
 </style>
+
+

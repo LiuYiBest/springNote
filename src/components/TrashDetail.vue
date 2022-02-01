@@ -10,14 +10,14 @@
         <li v-for="note in trashNotes">
           <router-link :to="`/trash?noteId=${note.id}`">
             <span class="date">{{note.updatedAtFriendly}}</span>
-            <span class="title">{{note.title}}</span>
+            <span class="title">{{note.title}}</span>          
           </router-link>
         </li>
       </ul>
     </div>
     <div class="note-detail">
       <div class="note-bar" v-if="true">
-        <span> 创建日期: {{curTrashNote.createdAtFriendly}}</span>
+        <span> 创建日期: {{curTrashNote.createdAtFriendly}}</span> 
         <span> | </span>
         <span> 更新日期: {{curTrashNote.updatedAtFriendly}}</span>
         <span> | </span>
@@ -54,6 +54,10 @@ export default {
     this.getTrashNotes()
       .then(() => {
         this.setCurTrashNote({ curTrashNoteId: this.$route.query.noteId })
+        this.$router.replace({
+          path: '/trash',
+          query: { noteId: this.curTrashNote.id }
+        })
       })
   },
 
@@ -62,7 +66,7 @@ export default {
       'trashNotes',
       'curTrashNote',
       'belongTo'
-    ]),
+      ]),
 
     compiledMarkdown () {
       return md.render(this.curTrashNote.content||'')
@@ -72,7 +76,7 @@ export default {
   methods: {
     ...mapMutations([
       'setCurTrashNote'
-    ]),
+      ]),
 
     ...mapActions([
       'checkLogin',
@@ -80,15 +84,35 @@ export default {
       'revertTrashNote',
       'getTrashNotes',
       'getNotebooks'
-    ]),
+      ]),
 
     onDelete() {
-      console.log({ noteId: this.curTrashNote.id })
-      this.deleteTrashNote({ noteId: this.curTrashNote.id })
+      this.$confirm('删除后将无法恢复', '确定删除？', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          return this.deleteTrashNote({ noteId: this.curTrashNote.id })
+        }).then(() => {
+          console.log('delete success')
+          this.setCurTrashNote()
+          this.$router.replace({
+            path: '/trash',
+            query: { noteId: this.curTrashNote.id }
+          })          
+        })
+      
     },
 
     onRevert() {
       this.revertTrashNote({ noteId: this.curTrashNote.id })
+        .then(() => {
+          this.setCurTrashNote()
+          this.$router.replace({
+            path: '/trash',
+            query: { noteId: this.curTrashNote.id }
+          })
+        })
     }
 
   },
@@ -120,6 +144,6 @@ export default {
 
     }
   }
-}
+ }
 
 </style>
