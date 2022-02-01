@@ -1,35 +1,74 @@
-import request from '@/helpers/request'
-import { friendlyDate } from '@/helpers/util'
+import Trash from '@/apis/trash'
+import { Message } from 'element-ui'
 
-const URL = {
-  GET: '/notes/trash',
-  REVERT: '/notes/:noteId/revert',
-  DELETE: '/notes/:noteId/confirm'
+const state = {
+  trashNotes: null,
+  curTrashNoteId: null
 }
 
-export default {
-  getAll() {
-    return new Promise((resolve, reject) => {
-      request(URL.GET)
-        .then(res => {
-          res.data = res.data.sort((note1, note2) => note1.createdAt < note2.createdAt)
-          res.data.forEach(note => {
-            note.createdAtFriendly = friendlyDate(note.createdAt)
-            note.updatedAtFriendly = friendlyDate(note.updatedAt)
-          })
-          resolve(res)
-        }).catch(err => {
-          reject(err)
-        })
-    })
+const getters = {
+  trashNotes: state => state.trashNotes || [],
+
+  curTrashNote: (state, getters) => {
+    if(!state.curTrashNoteId) return getters.trashNotes[0] || {}
+    return state.trashNotes.find(note => note.id == state.curTrashNoteId) || {}
   },
 
-  deleteNote({ noteId }) {
-    return request(URL.DELETE.replace(':noteId', noteId), 'DELETE')
+  belongTo: (state, getters, rootState, rootGetters) => {
+    let notebook = rootGetters.notebooks.find(notebook => notebook.id == getters.curTrashNote.notebookId) || {}
+    return notebook.title || ''
+  }
+}
+
+const mutations = {
+  setTrashNotes(state, payload) {
+    state.trashNotes = payload.trashNotes
   },
 
-  revertNote({ noteId }) {
-    return request(URL.REVERT.replace(':noteId', noteId), 'PATCH')
+  addTrashNote(state, payload) {
+    setTrashNotes.unshift(payload.note)
+  },
+
+  deleteTrashNote(state, payload) {
+    state.trashNotes = state.trashNotes.filter(note => note.id != payload.noteId)
+  },
+
+  setCurTrashNote(state, payload = {}) {
+    state.curTrashNoteId = payload.curTrashNoteId
   }
 
+}
+
+const actions = {
+  getTrashNotes({ commit }) {
+    return Trash.getAll()
+      .then(res => {
+        commit('setTrashNotes', { trashNotes: res.data })
+      })
+  },
+
+  deleteTrashNote({ commit }, { noteId }) {
+    return Trash.deleteNote({ noteId })
+      .then(res => {
+        commit('deleteTrashNote', { noteId })
+        Message.success(res.msg)
+      })
+  },
+
+  revertTrashNote({ commit }, { noteId }) {
+    return Trash.revertNote({ noteId })
+      .then(res => {
+        commit('deleteTrashNote', { noteId })
+        Message.success(res.msg)
+      })
+  }
+
+}
+
+
+export default {
+  state,
+  getters,
+  mutations,
+  actions
 }
