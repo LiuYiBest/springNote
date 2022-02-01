@@ -5,7 +5,6 @@ export function friendlyDate(datsStr) {
   let space = now - time
   let str = ''
 
-  //计算笔记的时间
   switch (true) {
     case space < 60000:
       str = '刚刚'
