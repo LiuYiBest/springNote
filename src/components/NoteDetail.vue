@@ -30,7 +30,7 @@
 import Auth from '../apis/auth'
 import NoteSidebar from '../components/NoteSidebar'
 import Bus from '../helpers/bus'
-import _ from 'lodash'
+import _ from 'lodash'  //节流
 import Notes from '../apis/notes'
 import MarkdownIt from 'markdown-it'
 
