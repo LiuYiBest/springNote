@@ -32,7 +32,7 @@ import NoteSidebar from '../components/NoteSidebar'
 import Bus from '../helpers/bus'
 import _ from 'lodash'  //节流
 import Notes from '../apis/notes'
-import MarkdownIt from 'markdown-it'
+// import MarkdownIt from 'markdown-it'
 
 let md = new MarkdownIt()
 

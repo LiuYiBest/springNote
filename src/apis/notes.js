@@ -23,6 +23,7 @@ export default {
           })
           resolve(res)
         }).catch(err => {
+
         reject(err)
       })
     })
