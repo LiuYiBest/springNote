@@ -1,34 +1,31 @@
 <template>
-  <span :title="username">{{ slug }}</span>
+  <span :title="username">{{slug}}</span>
 </template>
 
 <script>
 import Auth from '@/apis/auth'
-import Bus from  '../helpers/bus'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
-
   data() {
-    return {
-      username: '未登录',
-    }
+    return {}
   },
+
   created() {
-    Bus.$on('userInfo',user=>{
-      this.username = user.username
-    })
-    //获取用户的数据
-    Auth.getInfo().then(res=>{
-      if(res.isLogin){
-        this.username = res.data.username
-      }
+    this.setUser()
+  },
+
+  methods: {
+    ...mapActions({
+      'setUser': 'checkLogin'
     })
   },
-  //  使用计算属性获取用户的名称
+
   computed: {
-    slug() {
-      return this.username.charAt(0)
-    }
+    ...mapGetters([
+      'username',
+      'slug'
+    ])
   }
 }
 </script>
