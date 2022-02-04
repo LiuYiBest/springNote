@@ -3,31 +3,30 @@
 </template>
 
 <script>
-import Auth from '@/apis/auth'
-import { mapGetters, mapActions } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
-export default {
-  data() {
-    return {}
-  },
+  export default {
+    data() {
+      return {}
+    },
 
-  created() {
-    this.setUser()
-  },
+    created() {
+      this.setUser()
+    },
 
-  methods: {
-    ...mapActions({
-      'setUser': 'checkLogin'
-    })
-  },
+    methods: {
+      ...mapActions({
+        'setUser': 'checkLogin'
+      })
+    },
 
-  computed: {
-    ...mapGetters([
-      'username',
-      'slug'
-    ])
+    computed: {
+      ...mapGetters([
+        'username',
+        'slug'
+        ])
+    }
   }
-}
 </script>
 
 <style scoped>
