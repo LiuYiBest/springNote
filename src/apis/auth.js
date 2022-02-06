@@ -1,5 +1,6 @@
 import request from '@/helpers/request'
 
+//接口约定
 const URL = {
   REGISTER: '/auth/register',
   LOGIN: '/auth/login',
