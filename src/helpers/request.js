@@ -36,8 +36,3 @@ export default function request(url, type = 'GET', data = {}) {
   })
 }
 
-
-// request('/auth/login', 'POST', {username: 'hunger', password: '123456'})
-//   .then(data=>{
-//     console.log(data)
-//   })

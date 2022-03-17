@@ -18,7 +18,7 @@
         <div class="editor">
           <codemirror v-model="curNote.content" :options="cmOptions" v-show="!isShowPreview" @input="onUpdateNote" @inputRead="statusText='正在输入...'"></codemirror>
          <!--  <textarea v-show="isShowPreview"  v-model:value="curNote.content" @input="onUpdateNote" @keydown="statusText='正在输入...'" placeholder="输入内容, 支持 markdown 语法"></textarea>-->
-          <div class="preview markdown-body" v-html="previewContent" v-show="isShowPreview"> 
+          <div class="preview markdown-body" v-html="previewContent" v-show="isShowPreview">
           </div>
         </div>
       </div>
@@ -46,7 +46,7 @@ export default {
     NoteSidebar,
     codemirror
   },
-  
+
   data () {
     return {
       statusText: '笔记未改动',
@@ -57,7 +57,6 @@ export default {
         theme: 'neat',
         lineNumbers: false,
         line: true,
-        // more codemirror options, 更多 codemirror 的高级配置...
       }
     }
   },
@@ -106,7 +105,7 @@ export default {
           this.$router.replace({ path: '/note' })
         })
     }
-    
+
   },
 
   beforeRouteUpdate (to, from, next) {
