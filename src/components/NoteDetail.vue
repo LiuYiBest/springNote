@@ -61,10 +61,12 @@ export default {
     }
   },
 
+  //是否登录
   created() {
     this.checkLogin({ path: '/login' })
   },
 
+  //笔记本列表
   computed: {
     ...mapGetters([
       'notes',
@@ -88,6 +90,7 @@ export default {
       'checkLogin'
       ]),
 
+    //保存笔记
     onUpdateNote: _.debounce(function() {
       if(!this.curNote.id) return
       this.updateNote({ noteId: this.curNote.id, title: this.curNote.title, content: this.curNote.content })
@@ -99,6 +102,7 @@ export default {
 
     }, 3000),
 
+    //删除笔记
     onDeleteNote() {
       this.deleteNote({ noteId: this.curNote.id })
         .then(data => {

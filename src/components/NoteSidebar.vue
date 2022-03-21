@@ -11,7 +11,7 @@
         <el-dropdown-item  command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    
+
     <div class="menu">
       <div>更新时间</div>
       <div>标题</div>
@@ -20,7 +20,7 @@
       <li v-for="note in notes">
         <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
           <span class="date">{{note.updatedAtFriendly}}</span>
-          <span class="title">{{note.title}}</span>          
+          <span class="title">{{note.title}}</span>
         </router-link>
       </li>
     </ul>
@@ -32,6 +32,7 @@
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
   export default {
+    //初始化笔记本列表
     created() {
       this.getNotebooks()
         .then(() => {
